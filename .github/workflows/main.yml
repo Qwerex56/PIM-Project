@@ -12,6 +12,8 @@ jobs:
   build-spa:
     name: Build % Test
     runs-on: ubuntu-latest
+    defaults:
+      working-directory: ./weather_app
     strategy:
       matrix:
         node-version: [18.x, 20.x]
@@ -28,7 +30,6 @@ jobs:
 
       - name: Install dependenies
         run: npm ci
-        working-directory: ./weather_app
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
@@ -56,7 +57,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./weather_app
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
