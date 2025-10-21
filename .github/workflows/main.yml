@@ -12,9 +12,6 @@ jobs:
   build-spa:
     name: Build % Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./weather_app
     strategy:
       matrix:
         node-version: [18.x, 20.x]
@@ -28,6 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path:: './weather-app/package-lock.json'
 
       - name: Install dependenies
         run: npm ci
