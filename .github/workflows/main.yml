@@ -82,8 +82,8 @@ jobs:
           name: "Electron Build ${{ github.run_number }}"
           tag_name: "electron-${{ github.run_number }}"
           files: |
-            dist/electron/**/*.exe
-            dist/electron/**/*.dmg
-            dist/electron/**/*.AppImage
+            **/dist/electron/**/*.exe
+            **/dist/electron/**/*.dmg
+            **/dist/electron/**/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
