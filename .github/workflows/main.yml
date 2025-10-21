@@ -72,7 +72,7 @@ jobs:
 
       - name: Create archives
         run: |
-          ls ./dist -all
+          ls ./dist/electron -all
           cd ./dist/electron/Packed
           mkdir -p release
           for dir in */ ; do
