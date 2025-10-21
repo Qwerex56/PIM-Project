@@ -15,6 +15,9 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
+    defaults:
+      run:
+        working-directory: ./weather_app/
 
     steps:
       - name: Checkout code
@@ -26,9 +29,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
-
-      - name: Go to workin dir
-        run: cd weather_app
         
       - name: Install dependenies
         run: npm i
