@@ -12,9 +12,6 @@ jobs:
   build-spa:
     name: Build % Test
     runs-on: ubuntu-latest
-    default:
-      run:
-        working-directory: ./weather-app
     strategy:
       matrix:
         node-version: [18.x, 20.x]
