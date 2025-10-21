@@ -70,15 +70,9 @@ jobs:
       - name: Build Electron packages
         run: quasar build -m electron
 
-      - name: Upload Electron artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: electron-dist
-          path: dist/electron/
-
       - name: Create archives
         run: |
-          cd weather_app/dist/electron/Packed
+          cd ./weather_app/dist/electron/Packed
           mkdir -p release
           for dir in */ ; do
             zip -r "./release/${dir%/}.zip" "$dir"
@@ -88,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: electron-release-zips
-          path: weather_app/dist/electron/Packed/release/*.zip
+          path: ./weather_app/dist/electron/Packed/release/*.zip
 
       - name: Create GH Release
         uses: softprops/action-gh-release@v1
