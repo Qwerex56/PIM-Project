@@ -75,7 +75,7 @@ jobs:
           cd ./dist/electron/Packaged
           mkdir release
           for dir in */ ; do
-            zip -r "./release/${dir}.zip" "$dir"
+            zip -r "./release/${dir%/}.zip" "$dir"
           done
 
       - name: Upload archives as artifacts
