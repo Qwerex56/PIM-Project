@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Setup Node.js 18.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 18.x
           cache: 'npm'
@@ -70,7 +70,7 @@ jobs:
         run: quasar build -m electron
 
       - name: Upload Electron artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: electron-dist
           path: dist/electron/
