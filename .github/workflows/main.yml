@@ -31,7 +31,7 @@ jobs:
         run: cd weather_app
         
       - name: Install dependenies
-        run: npm ci
+        run: npm i
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
