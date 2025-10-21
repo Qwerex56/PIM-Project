@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Go to workin dir
-        run: cd weather-app
+        run: cd weather_app
         
       - name: Install dependenies
         run: npm ci
