@@ -73,9 +73,9 @@ jobs:
       - name: Create archives
         run: |
           cd ./dist/electron/Packaged
-          mkdir -p release
+          mkdir release
           for dir in */ ; do
-            zip -r "./release/${dir%/}.zip" "$dir"
+            zip -r "./release/${dir}.zip" "$dir"
           done
 
       - name: Upload archives as artifacts
