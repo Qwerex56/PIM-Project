@@ -72,7 +72,7 @@ jobs:
 
       - name: Create archives
         run: |
-          cd ./dist/electron/Packeged
+          cd ./dist/electron/Packaged
           mkdir -p release
           for dir in */ ; do
             zip -r "./release/${dir%/}.zip" "$dir"
@@ -82,13 +82,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: electron-release-zips
-          path: ./dist/electron/Packeged/release/*.zip
+          path: ./dist/electron/Packaged/release/*.zip
 
       - name: Create GH Release
         uses: softprops/action-gh-release@v1
         with:
           name: "Electron Build ${{ github.run_number }}"
           tag_name: "electron-${{ github.run_number }}"
-          files: ./dist/electron/Packeged/release/*.zip
+          files: ./dist/electron/Packaged/release/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
