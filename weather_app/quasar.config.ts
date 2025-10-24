@@ -207,6 +207,9 @@ export default defineConfig((ctx) => {
         // protocol: 'myapp://path',
         // Windows only
         // win32metadata: { ... }
+        executableName: 'Weather PIM',
+        platform: ['win32', 'linux'],
+        arch: ['x64', 'arm64'],
       },
 
       builder: {
