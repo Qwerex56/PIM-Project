@@ -7,6 +7,8 @@ on:
     branches: [main]
   workflow_dispatch:
     
+permissions:
+  contents: write
 
 jobs:
   build-spa:
@@ -15,19 +17,23 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
+    defaults:
+      run:
+        working-directory: ./weather_app/
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-
+          cache-dependency-path: '**/package-lock.json'
+        
       - name: Install dependenies
-        run: npm ci
+        run: npm i
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
@@ -35,26 +41,30 @@ jobs:
       - name: Build Quasar SPA
         run: quasar build
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v4
   
   build-electron:
     name: Build Electron app
     needs: build-spa
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./weather_app/
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Node.js 18.x
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 20.x
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
@@ -62,20 +72,27 @@ jobs:
       - name: Build Electron packages
         run: quasar build -m electron
 
-      - name: Upload Electron artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: electron-dist
-          path: dist/electron/
+      - name: Create archives
+        run: |
+          cd ./dist/electron/Packaged
+          mkdir release
+          for dir in */ ; do
+            zip -r "./release/${dir%/}.zip" "$dir"
+          done
+          rm ./release/release.zip
+          ls ./release -a
+
+      # - name: Upload archives as artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: electron-release-zips
+      #     path: ./release/*.zip
 
       - name: Create GH Release
         uses: softprops/action-gh-release@v1
         with:
           name: "Electron Build ${{ github.run_number }}"
           tag_name: "electron-${{ github.run_number }}"
-          files: |
-            dist/electron/**/*.exe
-            dist/electron/**/*.dmg
-            dist/electron/**/*.AppImage
+          files: "./weather_app/dist/electron/Packaged/release/*.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
