@@ -77,7 +77,7 @@ jobs:
           for dir in */ ; do
             zip -r "./release/${dir%/}.zip" "$dir"
           done
-          ls -a
+          ls ./release -a
 
       - name: Upload archives as artifacts
         uses: actions/upload-artifact@v4
