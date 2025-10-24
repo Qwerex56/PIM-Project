@@ -80,6 +80,8 @@ jobs:
           rm ./release/release.zip
           ls ./release -a
           gh release upload ${{ github.run_number }} ./release/*zip
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
 
       # - name: Upload archives as artifacts
       #   uses: actions/upload-artifact@v4
