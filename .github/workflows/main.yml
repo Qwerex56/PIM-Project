@@ -91,6 +91,7 @@ jobs:
       - name: Decode keystore
         run: |
           echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > release.keystore
+          find release.keystore
 
       - name: Build Electron packages
         run: quasar build -m electron
