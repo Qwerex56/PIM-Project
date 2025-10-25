@@ -1,4 +1,4 @@
-name: Build Quasar app
+name: Build Quasar and Android app
 
 on:
   push:
@@ -47,6 +47,10 @@ jobs:
     defaults:
       run:
         working-directory: ./weather_app/
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -83,6 +87,10 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./src-capacitor/android/gradlew
+      
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > release.keystore
 
       - name: Build Electron packages
         run: quasar build -m electron
