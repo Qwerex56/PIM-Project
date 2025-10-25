@@ -77,6 +77,9 @@ jobs:
           api-level: 33
           build-tools-version: 33.0.2
           ndk-version: 21.4.7075529
+      
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build Electron packages
         run: quasar build -m electron
