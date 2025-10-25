@@ -39,9 +39,6 @@ jobs:
 
       - name: Build Quasar SPA
         run: quasar build
-
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v4
   
   build-electron:
     name: Build Electron app
@@ -67,9 +64,25 @@ jobs:
 
       - name: Install Quasar CLI
         run: npm install -g @quasar/cli
+      
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33
+          build-tools-version: 33.0.2
+          ndk-version: 21.4.7075529
 
       - name: Build Electron packages
         run: quasar build -m electron
+      
+      - name: Build Android APK
+        run: quasar build -m capacitor -T android
 
       - name: Create archives
         run: |
@@ -81,17 +94,13 @@ jobs:
           rm ./release/release.zip
           ls ./release -a
 
-      # - name: Upload archives as artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: electron-release-zips
-      #     path: ./release/*.zip
-
       - name: Create GH Release
         uses: softprops/action-gh-release@v1
         with:
-          name: "Electron Build ${{ github.run_number }}"
-          tag_name: "electron-${{ github.run_number }}"
-          files: "./weather_app/dist/electron/Packaged/release/*.zip"
+          name: "Quasar app build ${{ github.run_number }}"
+          tag_name: "quasar-${{ github.run_number }}"
+          files: | 
+                "./weather_app/dist/electron/Packaged/release/*.zip"
+                "./weather_app/dist/capacitor/android/apk/release/*.apk"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
