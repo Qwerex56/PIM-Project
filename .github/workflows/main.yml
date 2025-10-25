@@ -40,7 +40,7 @@ jobs:
       - name: Build Quasar SPA
         run: quasar build
   
-  build-electron:
+  build-electron-capacitor:
     name: Build Electron app
     needs: build-spa
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
         run: quasar build -m electron
       
       - name: Build Android APK
-        run: echo | quasar build -m capacitor -T android
+        run: quasar build -m capacitor -T android
 
       - name: Create archives
         run: |
@@ -99,7 +99,7 @@ jobs:
           name: "Quasar app build ${{ github.run_number }}"
           tag_name: "quasar-${{ github.run_number }}"
           files: | 
-                "./weather_app/dist/electron/Packaged/release/*.zip"
-                "./weather_app/dist/capacitor/android/apk/release/*.apk"
+                ./weather_app/dist/electron/Packaged/release/*.zip
+                ./weather_app/dist/capacitor/android/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
