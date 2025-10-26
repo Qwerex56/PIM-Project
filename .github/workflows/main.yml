@@ -90,7 +90,7 @@ jobs:
       
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > ./src-capacitor/android/app/release.keystore
+          echo "${{ secrets.ANDROID_SIGN_KEY }}" | base64 -d > ./src-capacitor/android/app/release.keystore
 
       - name: Build Electron packages
         run: quasar build -m electron
