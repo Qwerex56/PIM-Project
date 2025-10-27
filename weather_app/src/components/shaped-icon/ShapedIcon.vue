@@ -7,7 +7,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<{
   icon?: string
 }>();
