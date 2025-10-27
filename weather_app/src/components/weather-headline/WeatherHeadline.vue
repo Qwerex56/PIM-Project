@@ -32,8 +32,8 @@ p {
 .weather-headline {
   display: flex;
   flex-direction: row;
-
-  align-items: space-between;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .weather-temperatures {
