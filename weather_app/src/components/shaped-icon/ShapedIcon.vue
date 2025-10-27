@@ -1,6 +1,6 @@
 <template>
 <div class="shaped-icon">
-  <font-awesome-icon icon="fa-solid fa-house" width-auto/>
+  <font-awesome-icon :icon="icon ?? 'fa-solid fa-house'" width-auto/>
 </div>
 </template>
 
