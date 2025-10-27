@@ -1,6 +1,6 @@
 <template>
 <div class="shaped-icon">
-  <font-awesome-icon icon="fa-solid {{ props.icon?? 'fa-circle' }}" width-auto/>
+  <font-awesome-icon :icon="icon ?? 'fa-solid fa-house'" width-auto/>
 </div>
 </template>
 
@@ -18,5 +18,8 @@ const props = defineProps<{
   padding: .375rem;
 
   border-radius: 9999px;
+
+  background-color: #6750A4;
+  color: white;
 }
 </style>
