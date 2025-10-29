@@ -1,7 +1,9 @@
 <template>
 <main class="main-view">
   <div class="top-bar">
-    <!-- Top bar -->
+    <font-awesome-icon :icon="faBars" size="2x" />
+    <p>Weather App</p>
+    <font-awesome-icon :icon="faUser" size="2x" />
   </div>
 
   <section>
@@ -23,13 +25,21 @@
 
   </section>
 
-  <section>
-    <!-- Search bar -->
-  </section>
+  <!-- Search bar -->
+  <!-- Its really a button which changes page to search view -->
+  <a class="search-button" href="/#/search">
+    Search location
+    <font-awesome-icon :icon="faMagnifyingGlass" />
+  </a>
 </main>
 </template>
 
 <script lang="ts" setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
 import HorizontalWeatherCard from 'src/components/HorizontalWeatherCard/HorizontalWeatherCard.vue';
 import type HorizontalWeatherCardModel from 'src/components/HorizontalWeatherCard/HorizontalWeatherCardModel';
 
@@ -77,5 +87,39 @@ const weatherDataList: Array<HorizontalWeatherCardModel> = [
   margin-bottom: 1rem;
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+
+  background-color: #F3EDF7;
+}
+
+p {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.search-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 1rem 1rem 2rem;
+  margin: auto 1rem 1rem 1rem;
+
+  justify-self: end;
+
+  background-color: #F3EDF7;
+
+  border: none;
+  border-radius: 999999px;
 }
 </style>

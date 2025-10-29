@@ -10,6 +10,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/TestPage.vue') }],
   },
+  {
+    path: '/search',
+    component: () => import('pages/search-view/SearchView.vue') // TODO: Replace with SearchView.vue when created
+  },
 
   // Always leave this as last one,
   // but you can also remove it
