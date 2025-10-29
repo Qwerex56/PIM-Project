@@ -1,1 +1,5 @@
 /* app global css */
+:root {
+    --primary-container: #EADDFF;
+    --on-surface: #1D1B20;
+}
