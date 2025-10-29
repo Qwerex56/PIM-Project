@@ -7,8 +7,8 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-const props = defineProps<{
-  icon?: string;
+defineProps<{
+  icon?: string
 }>();
 </script>
 
