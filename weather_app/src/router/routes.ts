@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/search',
-    component: () => import('pages/search-view/SearchView.vue') // TODO: Replace with SearchView.vue when created
+    component: () => import('pages/search-view/SearchView.vue')
   },
 
   // Always leave this as last one,
