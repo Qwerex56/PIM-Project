@@ -27,10 +27,10 @@
 
   <!-- Search bar -->
   <!-- Its really a button which changes page to search view -->
-  <a class="search-button" href="/#/search">
+  <router-link class="search-button" to="/search">
     Search location
     <font-awesome-icon :icon="faMagnifyingGlass" />
-  </a>
+  </router-link>
 </main>
 </template>
 
