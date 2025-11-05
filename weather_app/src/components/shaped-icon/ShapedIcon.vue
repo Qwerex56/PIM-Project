@@ -1,16 +1,15 @@
 <template>
-<div class="shaped-icon">
-  <font-awesome-icon :icon="icon ?? 'fa-solid fa-house'" width-auto/>
-</div>
+  <div class="shaped-icon">
+    <font-awesome-icon :icon="icon ?? 'fa-solid fa-house'" width-auto />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-const props = defineProps<{
+defineProps<{
   icon?: string
 }>();
-
 </script>
 
 <style scoped lang="css">
@@ -28,7 +27,7 @@ const props = defineProps<{
   border-radius: 50%;
   overflow: hidden;
 
-  background-color: #6750A4;
+  background-color: #6750a4;
   color: white;
 
   /* small external spacing */

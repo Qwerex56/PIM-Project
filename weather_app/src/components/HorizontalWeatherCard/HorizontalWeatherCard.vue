@@ -26,6 +26,7 @@ const props = defineProps<{
 .horizontal-weather-card {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 
   border-radius: .75rem;
 
@@ -41,6 +42,8 @@ const props = defineProps<{
   grid-template-rows: repeat(2, 1fr);
 
   align-items: center;
+
+  width: 100%;
 }
 
 .separator {
