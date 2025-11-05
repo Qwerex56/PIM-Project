@@ -6,13 +6,45 @@
       :todos="todos"
       :meta="meta"
     ></example-component>
+
+    <!-- <mini-weather-status
+      :model="{
+        date: 'Now',
+        weatherIconUrl: 'https://cdn.weatherapi.com/weather/64x64/day/116.png',
+        information: '22°C, Partly cloudy',
+      }"
+    ></mini-weather-status> -->
+    <mini-weather-status
+      :model="{
+        date: 'Now',
+        weatherIconUrl: 'fa-solid fa-sun',
+        information: '12°C',
+      }"
+    ></mini-weather-status>
+
+    <HourlyForecastCard
+      :time_label="['Now', '13:00', '14:00', '15:00', '16:00', '17:00']"
+      :weather_icons="[
+        'fa-solid fa-sun',
+        'fa-solid fa-sun',
+        'fa-solid fa-sun',
+        'fa-solid fa-sun',
+        'fa-solid fa-sun',
+        'fa-solid fa-sun'
+      ]"
+      :temperatures="[12, 13, 13, 11, 10, 9]"
+    />
   </q-page>
+  <ShapedIcon icon="fa-solid fa-house"/>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { Todo, Meta } from 'components/models';
 import ExampleComponent from 'components/ExampleComponent.vue';
+import MiniWeatherStatus from 'components/mini-weather-status/MiniWeatherStatus.vue';
+import HourlyForecastCard from 'components/hourly-forecast-card/HourlyForecastCard.vue';
+import ShapedIcon from 'src/components/shaped-icon/ShapedIcon.vue';
 
 const todos = ref<Todo[]>([
   {
