@@ -5,14 +5,18 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('pages/main-view/MainView.vue'),
   },
-  {
-    path: '/TestPage',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/TestPage.vue') }],
-  },
+
   {
     path: '/search',
     component: () => import('pages/search-view/SearchView.vue')
+  },
+  {
+    path: '/details',
+    component: () => import('pages/detail-view/DetailView.vue')
+  },
+  {
+    path: '/current',
+    component: () => import('pages/current-weather/CurrentWeather.vue')
   },
 
   // Always leave this as last one,
@@ -22,9 +26,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ErrorNotFound.vue'),
   },
   {
-    path: '/details',
-    component: () => import('pages/detail-view/DetailView.vue')
-  }
+    path: '/TestPage',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/TestPage.vue') }],
+  },
 ];
 
 export default routes;

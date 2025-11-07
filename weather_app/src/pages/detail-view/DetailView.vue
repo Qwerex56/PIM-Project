@@ -1,29 +1,10 @@
 <template>
   <main class="detail-view">
 
-      <q-card flat class="q-pa-md full-width q-mb-md summary-card">
-        <div class="row justify-between items-center">
-          <div>
-            <div class="text-subtitle1 text-grey-8">{{ weatherData.LocationName }}</div>
-            <div class="text-h2 text-bold text-dark">{{ weatherData.Temperature }}°C</div>
-            <div class="text-caption text-grey-7">feels like {{ weatherData.TemperaturePerceived }}°C</div>
-          </div>
-          <q-avatar size="80px" >
-            <!-- <q-icon name="mdi-weather-sunny" size="40px" color="amber" /> -->
-             <img class="condition-icon" :src="weatherData.ConditionIconUrl" alt="Con image" />
-          </q-avatar>
-        </div>
-
-          <div class="row justify-around">
-            <q-btn label="Today" class="btn-today" unelevated />
-            <q-btn label="Tomorrow" class="btn-tomorrow" unelevated />
-            <q-btn label="3 days" class="btn-3days" unelevated />
-          </div>
-        <!-- </q-card> -->
-      </q-card>
+    <WeatherTopBox />
 
       <!-- this is a copypaste from mainview -->
-      <section>
+    <section>
     <!-- Weather information -->
     <div v-if="exampleFutureWeatherData.length === 0">
       <p class="no-saved-locations">No saved locations</p>
@@ -45,6 +26,13 @@
 </template>
 
 <style scoped>
+.detail-view {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
 .q-page {
   min-height: 100vh;
 }
@@ -97,14 +85,12 @@
 
 <script setup lang="ts">
 import HorizontalWeatherCard from 'src/components/HorizontalWeatherCard/HorizontalWeatherCard.vue';
-import type DetailViewModel from './DetailViewModel';
+import WeatherTopBox from 'src/components/weather-topbox/WeatherTopbox.vue';
+
 import type HorizontalWeatherCardModel from 'src/components/HorizontalWeatherCard/HorizontalWeatherCardModel';
 
 // reuses HorizontalWeatherCard due to its similarity
 // uses location as day label, card should be generalised
-const props = defineProps<{
-  weatherData: DetailViewModel;
-}>();
 
 const exampleFutureWeatherData: Array<HorizontalWeatherCardModel> = [
   {
@@ -129,16 +115,4 @@ const exampleFutureWeatherData: Array<HorizontalWeatherCardModel> = [
     ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/308.png'
   },
 ]
-
-const defaultWeatherData: DetailViewModel = {
-  LocationName: 'Wrocław, Poland',
-  Temperature: 27,
-  TemperaturePerceived: 24,
-  ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/116.png',
-  // weatherDataList: exampleFutureWeatherData
-  // add other required properties with sensible defaults
-};
-
-const weatherData = props.weatherData ?? defaultWeatherData;
-
 </script>

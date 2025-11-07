@@ -9,9 +9,9 @@
   }"/>
 
   <div class="forecast-buttons">
-    <router-link class="button" to="/" v-ripple>Today</router-link>
-    <router-link class="button" to="/" v-ripple>Tomorrow</router-link>
-    <router-link class="button" to="/" v-ripple>3 days</router-link>
+    <router-link class="button" to="/current" v-ripple>Today</router-link>
+    <router-link class="button" to="/current" v-ripple>Tomorrow</router-link>
+    <router-link class="button" to="/details" v-ripple>3 days</router-link>
   </div>
 </div>
 </template>
@@ -38,15 +38,24 @@ import WeatherHeadline from '../weather-headline/WeatherHeadline.vue';
   display: flex;
   flex-direction: row;
 
-  justify-content: space-between;
+  justify-content: space-around;
+  gap: 0.5rem;
 }
 
 .button {
-  padding: 1rem 4.5rem;
+  display: flex;
+  flex: 1;
 
   background-color: #FFD8E4;
+  padding: 0.5rem 0;
 
-  text-align: center;
+  justify-content: center;
+
+  border-radius: 0.5rem;
+
+  color: #4A4459;
+  text-decoration: none;
+  font-weight: 600;
 
   cursor: pointer;
 }

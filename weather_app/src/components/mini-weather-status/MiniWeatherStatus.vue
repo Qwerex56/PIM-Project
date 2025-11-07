@@ -1,8 +1,7 @@
 <template>
   <div class="mini-weather-status">
     <p class="date-time">{{ props.model.date }}</p>
-    <!-- <img class="condition-icon" :src="props.model.weatherIconUrl" alt="weather-condition-icon" /> -->
-     <q-icon class="condition-icon" :name="props.model.weatherIconUrl" />
+    <img class="condition-icon" :src="props.model.weatherIconUrl" alt="weather-condition-icon" />
     <p class="weather-info">{{ props.model.information }}</p>
   </div>
 </template>
@@ -20,7 +19,7 @@ const props = defineProps<{
   display: flex;
   flex-direction: column;
 
-  gap: 0.375rem;
+  place-items: center;
 }
 
 .date-time,
@@ -28,10 +27,11 @@ const props = defineProps<{
   margin: 0;
 
   text-align: center;
+  font-size: 0.875rem;
 }
 
-.weather-info {
-  font-size: 0.875rem;
+.date-time {
+  font-weight: 500;
 }
 
 .condition-icon {

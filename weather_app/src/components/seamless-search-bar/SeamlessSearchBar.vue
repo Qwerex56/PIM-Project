@@ -1,7 +1,7 @@
 <template>
   <div class="seamless-search-bar">
     <input ref="inputRef" type="text" v-model="searchModel">
-    <img :src="searchIcon" alt="look" @click="focusInput">
+    <img class="icon" :src="searchIcon" alt="look" @click="focusInput">
   </div>
 </template>
 
@@ -38,6 +38,11 @@ onMounted(() => {
   justify-content: space-between;
 
   background-color: transparent;
+  color: #49454F;
+}
+
+.icon {
+  filter: invert(100%);
 }
 
 input {
