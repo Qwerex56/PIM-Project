@@ -14,11 +14,25 @@ defineProps<{
 
 <style scoped lang="css">
 .shaped-icon {
-  padding: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  border-radius: 9999px;
+  /* fixed square with padding included so it stays a circle */
+  width: 2.0rem;
+  height: 2.0rem;
+  padding: .375rem;
+  box-sizing: border-box;
+
+  border-radius: 50%;
+  overflow: hidden;
 
   background-color: #6750a4;
   color: white;
+
+  /* small external spacing */
+  margin: 0.25rem;
 }
+
+
 </style>

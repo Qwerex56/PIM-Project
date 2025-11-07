@@ -27,6 +27,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faAmbulance, faClock, faSun, faHouse } from '@fortawesome/free-solid-svg-icons';
+library.add(faAmbulance, faClock, faSun, faHouse);
 
 const linksList: EssentialLinkProps[] = [
   {
