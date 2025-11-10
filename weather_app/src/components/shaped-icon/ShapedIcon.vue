@@ -1,12 +1,10 @@
 <template>
   <div class="shaped-icon">
-    <font-awesome-icon :icon="icon ?? 'fa-solid fa-house'" width-auto />
+    <q-icon :name="icon ?? 'circle'" size="1.5rem" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
 defineProps<{
   icon?: string
 }>();
@@ -19,19 +17,16 @@ defineProps<{
   justify-content: center;
 
   /* fixed square with padding included so it stays a circle */
-  width: 2.0rem;
-  height: 2.0rem;
-  padding: .375rem;
+  width: fit-content;
+  height: fit-content;
+  padding: .25rem;
   box-sizing: border-box;
 
-  border-radius: 50%;
+  border-radius: 999px;
   overflow: hidden;
 
   background-color: #6750a4;
   color: white;
-
-  /* small external spacing */
-  margin: 0.25rem;
 }
 
 

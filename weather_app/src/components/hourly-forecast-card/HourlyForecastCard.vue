@@ -1,10 +1,8 @@
 <template>
-  <q-card flat bordered class="q-pa-md bg-purple-1 rounded-borders">
-    <div class="text-subtitle1 text-weight-medium text-purple-10 flex items-center q-mb-sm">
-      <!-- <q-icon name="access_time" class="q-mr-sm" /> -->
-       <!-- <ShapedIcon icon="fa-regular fa-clock" class="q-mr-sm"/> -->
-       <q-icon name="fa-regular fa-clock" class="q-mr-sm"/>
-      Hourly forecast
+  <q-card flat class="q-pa-md bg-purple-1 rounded-borders">
+    <div class="text-subtitle1 flex items-center text-weight-medium text-purple-10  q-mb-sm">
+      <ShapedIcon :icon="'access_time'" class="q-mr-sm"/>
+      <p class="title">Hourly forecast</p>
     </div>
 
     <div class="row justify-around items-center no-wrap" style="overflow-x: auto;">
@@ -14,7 +12,6 @@
         class="column items-center q-mx-sm"
         style="min-width: 64px;"
       >
-        <!-- <div class="text-caption text-grey-9 q-mb-xs">{{ label }}</div> -->
 
         <MiniWeatherStatus
           :model="{
@@ -33,7 +30,7 @@
 import MiniWeatherStatus from 'components/mini-weather-status/MiniWeatherStatus.vue'
 import ShapedIcon from '../shaped-icon/ShapedIcon.vue';
 
-const props = defineProps({
+defineProps({
   time_label: {
     type: Array<string>,
     required: true,
@@ -59,5 +56,11 @@ const props = defineProps({
 /* tighten up Quasar card selectors to be sure styles apply */
 .q-card.flat.bordered {
   border-radius: 16px !important;
+}
+
+.title {
+  margin: 0;
+
+  color:#4A4459;
 }
 </style>
