@@ -6,19 +6,19 @@
     <div class="status-top">
       <StatusCard
         title="Wilgotność"
-        :value="weatherStore.getCurrentWeather?.current.humidity.toString() + ' %'"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.humidity?.toString() + ' %'"
       />
       <StatusCard
         title="Wiatr"
-        :value="weatherStore.getCurrentWeather?.current.wind_kph.toString() + ' kph'"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.wind_kph?.toString() + ' kph'"
       />
       <StatusCard
         title="Ciśnienie"
-        :value="weatherStore.getCurrentWeather?.current.pressure_mb.toString() + ' mb'"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.pressure_mb?.toString() + ' mb'"
       />
       <StatusCard
         title="Widoczność"
-        :value="weatherStore.getCurrentWeather?.current.vis_km.toString() + ' km'"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.vis_km?.toString() + ' km'"
       />
     </div>
 
@@ -39,11 +39,11 @@
     <div class="status-bottom">
       <StatusCard
         title="Wschód słońca"
-        :value="weatherStore.getForecast?.forecast.forecastday[0]?.astro.sunrise.toString() + ''"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.astro.sunrise.toString() + ''"
       />
       <StatusCard
         title="Zachód słońca"
-        :value="weatherStore.getForecast?.forecast.forecastday[0]?.astro.sunset.toString() + ''"
+        :value="weatherStore.getForecast?.forecast.forecastday[1]?.astro.sunset.toString() + ''"
       />
     </div>
   </main>
@@ -62,24 +62,23 @@ import type WeatherHeadlineModel from 'src/components/weather-headline/WeatherHe
 const weatherStore = useWeatherStore();
 
 const headlineModel = computed<WeatherHeadlineModel>(() => ({
-  currentTemperature: weatherStore.getCurrentWeather?.current.temp_c ?? 0,
-  feelsLikeTemperature: weatherStore.getCurrentWeather?.current.feelslike_c ?? 0,
-  conditionIconUrl: weatherStore.getCurrentWeather?.current.condition?.icon ?? ''
+  currentTemperature: weatherStore.getForecast?.forecast.forecastday?.[1]?.day?.avgtemp_c ?? 0,
+  feelsLikeTemperature: weatherStore.getForecast?.forecast.forecastday?.[1]?.day?.avgtemp_c ?? 0,
+  conditionIconUrl: weatherStore.getForecast?.forecast.forecastday?.[1]?.day?.condition?.icon ?? ''
 }));
 
 const searchHint = computed(() => weatherStore.getLocation ?? 'Search location');
 
-// extract hourly forecast array (safely) and derive arrays used by HourlyForecastCard
+// extract tomorrow's hourly forecast (safely) and derive arrays used by HourlyForecastCard
 const hourly = computed(() => {
   return (
-    weatherStore.getForecast?.forecast?.forecastday?.[0]?.hour ?? []
+    weatherStore.getForecast?.forecast?.forecastday?.[1]?.hour ?? []
   );
 });
 
 const timeLabelArray = computed(() =>
   hourly.value.map((h: Hour) => {
     const t = h?.time ?? '';
-    // prefer HH:MM if available
     if (t) {
       const parts = t.split(' ');
       if (parts.length > 1 && typeof parts[1] === 'string') {

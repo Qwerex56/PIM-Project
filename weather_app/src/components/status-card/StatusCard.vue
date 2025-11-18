@@ -16,7 +16,7 @@ import ShapedIcon from '../shaped-icon/ShapedIcon.vue';
 const props = withDefaults(
   defineProps<{
     title?: string;
-    value?: string;
+    value: string;
     icon?: string;
   }>(),
   {

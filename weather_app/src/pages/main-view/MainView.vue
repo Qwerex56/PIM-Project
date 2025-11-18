@@ -1,37 +1,33 @@
 <template>
-<main class="main-view">
-  <div class="top-bar">
-    <font-awesome-icon :icon="faBars" size="2x" />
-    <p>Weather App</p>
-    <font-awesome-icon :icon="faUser" size="2x" />
-  </div>
-
-  <section>
-    <!-- Weather information -->
-    <div v-if="weatherDataList.length === 0">
-      <p class="no-saved-locations">No saved locations</p>
+  <main class="main-view">
+    <div class="top-bar">
+      <font-awesome-icon :icon="faBars" size="2x" />
+      <p>Weather App</p>
+      <font-awesome-icon :icon="faUser" size="2x" />
     </div>
 
-    <div v-else>
-      <HorizontalWeatherCard
-        v-for="value in weatherDataList"
-        :key="value.LocationName"
+    <section>
+      <!-- Weather information -->
+      <div v-if="weatherDataList.length === 0">
+        <p class="no-saved-locations">No saved locations</p>
+      </div>
 
-        :weather-data="value"
+      <div v-else>
+        <HorizontalWeatherCard v-for="value in weatherDataList" :key="value.LocationName" :weather-data="value"
+          class="weather-card" v-on:click="() => {
+            gotoSelectedLocation(value.LocationName);
+          }" />
+      </div>
 
-        class="weather-card"
-      />
-    </div>
+    </section>
 
-  </section>
-
-  <!-- Search bar -->
-  <!-- Its really a button which changes page to search view -->
-  <router-link class="search-button" to="/search">
-    Search location
-    <font-awesome-icon :icon="faMagnifyingGlass" />
-  </router-link>
-</main>
+    <!-- Search bar -->
+    <!-- Its really a button which changes page to search view -->
+    <router-link class="search-button" to="/search">
+      Search location
+      <font-awesome-icon :icon="faMagnifyingGlass" />
+    </router-link>
+  </main>
 </template>
 
 <script lang="ts" setup>
@@ -39,10 +35,42 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { Notify } from 'quasar'
+import { useQuasar } from 'quasar';
 
 import HorizontalWeatherCard from 'src/components/HorizontalWeatherCard/HorizontalWeatherCard.vue';
 import type HorizontalWeatherCardModel from 'src/components/HorizontalWeatherCard/HorizontalWeatherCardModel';
+import { useWeatherStore } from 'src/stores/weatherStore';
 
+import { useRouter } from 'vue-router';
+const $router = useRouter();
+const $q = useQuasar();
+
+const weatherStore = useWeatherStore();
+
+const gotoSelectedLocation = async (locationName: string) => {
+
+  weatherStore.setLocation(locationName);
+  try {
+    await weatherStore.fetchWeatherData();
+    await weatherStore.fetchForecastData();
+  } catch (e) {
+    Notify.create({
+      type: 'negative',
+      message: 'Failed to fetch weather data for the selected location.'
+    });
+
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to fetch weather data for the selected location.'
+    });
+
+    console.error(e);
+    return;
+  }
+
+  await $router.push('/currentWeather');
+}
 
 // example weather data list
 const weatherDataList: Array<HorizontalWeatherCardModel> = [
