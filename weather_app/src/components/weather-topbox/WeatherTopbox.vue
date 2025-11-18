@@ -1,24 +1,37 @@
 <template>
-<div class="weather-topbox">
-  <SeamlessSearchBar />
+  <div class="weather-topbox">
+    <SeamlessSearchBar :search-hint="searchHint" />
 
-  <WeatherHeadline :model="{
-    currentTemperature: 10,
-    feelsLikeTemperature: 8,
-    conditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/176.png'
-  }"/>
+    <WeatherHeadline :model="headlineModelToUse" />
 
-  <div class="forecast-buttons">
-    <router-link class="button" to="/current" v-ripple>Today</router-link>
-    <router-link class="button" to="/current" v-ripple>Tomorrow</router-link>
-    <router-link class="button" to="/details" v-ripple>3 days</router-link>
+    <div class="forecast-buttons">
+      <router-link class="button" to="/currentWeather" v-ripple>Today</router-link>
+      <router-link class="button" to="/tomorrowWeather" v-ripple>Tomorrow</router-link>
+      <router-link class="button" to="/weatherForecast" v-ripple>3 days</router-link>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
 import SeamlessSearchBar from '../seamless-search-bar/SeamlessSearchBar.vue';
 import WeatherHeadline from '../weather-headline/WeatherHeadline.vue';
+import type WeatherHeadlineModel from '../weather-headline/WeatherHeadlineModel';
+
+import { computed } from 'vue';
+
+const props = defineProps<{
+  headlineModel?: WeatherHeadlineModel,
+  searchHint?: string
+}>();
+
+const defaultHeadline: WeatherHeadlineModel = {
+  currentTemperature: 0,
+  feelsLikeTemperature: 0,
+  conditionIconUrl: ''
+};
+
+const headlineModelToUse = computed(() => props.headlineModel ?? defaultHeadline);
+const searchHint = computed(() => props.searchHint ?? '');
 
 </script>
 
@@ -38,24 +51,15 @@ import WeatherHeadline from '../weather-headline/WeatherHeadline.vue';
   display: flex;
   flex-direction: row;
 
-  justify-content: space-around;
-  gap: 0.5rem;
+  justify-content: space-between;
 }
 
 .button {
-  display: flex;
-  flex: 1;
+  padding: 1rem 4.5rem;
 
   background-color: #FFD8E4;
-  padding: 0.5rem 0;
 
-  justify-content: center;
-
-  border-radius: 0.5rem;
-
-  color: #4A4459;
-  text-decoration: none;
-  font-weight: 600;
+  text-align: center;
 
   cursor: pointer;
 }

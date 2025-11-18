@@ -1,27 +1,27 @@
 <template>
   <main class="detail-view">
 
-    <WeatherTopBox />
+    <WeatherTopBox :headline-model="headlineModel" :search-hint="searchHint" />
 
-      <!-- this is a copypaste from mainview -->
+    <!-- 3-day forecast list -->
     <section>
-    <!-- Weather information -->
-    <div v-if="exampleFutureWeatherData.length === 0">
-      <p class="no-saved-locations">No saved locations</p>
-    </div>
+      <!-- Weather information -->
+      <div v-if="futureWeatherData.length === 0">
+        <p class="no-saved-locations">No forecast available</p>
+      </div>
 
-    <div v-else>
-      <HorizontalWeatherCard
-        v-for="value in exampleFutureWeatherData"
-        :key="value.LocationName"
+      <div v-else>
+        <HorizontalWeatherCard
+          v-for="value in futureWeatherData"
+          :key="value.LocationName"
 
-        :weather-data="value"
+          :weather-data="value"
 
-        class="weather-card"
-      />
-    </div>
+          class="weather-card"
+        />
+      </div>
 
-  </section>
+    </section>
   </main>
 </template>
 
@@ -86,33 +86,39 @@
 <script setup lang="ts">
 import HorizontalWeatherCard from 'src/components/HorizontalWeatherCard/HorizontalWeatherCard.vue';
 import WeatherTopBox from 'src/components/weather-topbox/WeatherTopbox.vue';
-
 import type HorizontalWeatherCardModel from 'src/components/HorizontalWeatherCard/HorizontalWeatherCardModel';
+import { useWeatherStore } from 'src/stores/weatherStore';
+import { computed } from 'vue';
+import type { ForecastDay } from 'src/data/forecastWeather';
 
-// reuses HorizontalWeatherCard due to its similarity
-// uses location as day label, card should be generalised
+const weatherStore = useWeatherStore();
 
-const exampleFutureWeatherData: Array<HorizontalWeatherCardModel> = [
-  {
-    LocationName: 'Monday',
-    TemperatureMax: 25,
-    TemperatureMin: 15,
-    Condition: 'Sunny',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/176.png'
-  },
-  {
-    LocationName: 'Tuesday',
-    TemperatureMax: 28,
-    TemperatureMin: 18,
-    Condition: 'Partly Cloudy',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/116.png'
-  },
-  {
-    LocationName: 'Wednesday',
-    TemperatureMax: 22,
-    TemperatureMin: 12,
-    Condition: 'Rainy',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/308.png'
-  },
-]
+// Helper: convert 'YYYY-MM-DD' to weekday name (local)
+function weekdayFromDate(dateStr: string) {
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString(undefined, { weekday: 'long' });
+  } catch {
+    return dateStr;
+  }
+}
+
+const futureWeatherData = computed<Array<HorizontalWeatherCardModel>>(() => {
+  const days: ForecastDay[] = weatherStore.getForecast?.forecast?.forecastday ?? [];
+  return days.slice(0, 3).map((d) => ({
+    LocationName: weekdayFromDate(d.date),
+    TemperatureMax: d.day?.maxtemp_c ?? 0,
+    TemperatureMin: d.day?.mintemp_c ?? 0,
+    Condition: d.day?.condition?.text ?? undefined,
+    ConditionIconUrl: d.day?.condition?.icon ?? undefined,
+  }));
+});
+
+const headlineModel = computed(() => ({
+  currentTemperature: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.avgtemp_c ?? 0,
+  feelsLikeTemperature: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.avgtemp_c ?? 0,
+  conditionIconUrl: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.condition?.icon ?? '',
+}));
+
+const searchHint = computed(() => weatherStore.getLocation ?? 'Search for a location');
 </script>

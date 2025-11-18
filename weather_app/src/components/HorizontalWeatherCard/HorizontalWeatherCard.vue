@@ -1,7 +1,5 @@
 <template>
-  <section class="horizontal-weather-card" v-on:click="() => {
-    $router.push('/current')
-  }">
+  <section class="horizontal-weather-card">
     <div class="weather-info">
       <p class="location">{{ props.weatherData.LocationName }}</p>
       <p class="temperature">{{ props.weatherData.TemperatureMax }}</p>

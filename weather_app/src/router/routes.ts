@@ -11,12 +11,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/search-view/SearchView.vue')
   },
   {
-    path: '/details',
+    path: '/weatherForecast',
     component: () => import('pages/detail-view/DetailView.vue')
   },
   {
-    path: '/current',
+    path: '/currentWeather',
     component: () => import('pages/current-weather/CurrentWeather.vue')
+  },
+  {
+    path: '/tomorrowWeather',
+    component: () => import('pages/tomorrow-weather/TomorrowWeather.vue')
   },
 
   // Always leave this as last one,

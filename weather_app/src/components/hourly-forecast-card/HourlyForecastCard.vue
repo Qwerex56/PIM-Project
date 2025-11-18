@@ -13,13 +13,13 @@
         style="min-width: 64px;"
       >
 
-        <MiniWeatherStatus
-          :model="{
-            date: label,
-            weatherIconUrl: weather_icons[index]!,
-            information: temperatures[index] + '°'
-          }"
-        />
+            <MiniWeatherStatus
+              :model="{
+                date: label,
+                weatherIconUrl: weather_icons[index]!,
+                information: (temperatures[index] !== undefined ? temperatures[index] : '') + suffix
+              }"
+            />
       </div>
 
     </div>
@@ -43,6 +43,12 @@ defineProps({
   temperatures: {
     type: Array<number>,
     required: true,
+  }
+  ,
+  suffix: {
+    type: String,
+    required: false,
+    default: '°'
   }
 })
 </script>
