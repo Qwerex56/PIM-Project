@@ -62,6 +62,7 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { Notify } from 'quasar';
 import type CurrentWeather from 'src/data/currentWeather';
+import type { Position } from '@capacitor/geolocation';
 import { Geolocation } from '@capacitor/geolocation';
 
 const $router = useRouter();
@@ -106,13 +107,10 @@ const search = ref('');
 const store = useLocationStore();
 const recentLocation = $q.localStorage.getItem('recentLocation') as Location;
 const currentListOfLocations = ref<Location[] | null>(null);
-const currentGeoLocation = ref<GeolocationPosition | null>(null);
+// Export currentGeoLocation so it can be modified from outside this file
+const currentGeoLocation = ref<Position>();
+const currentGeoLocationL = ref<Location | null>();
 
-const getDistanceDeltaSquared = (loc1: Location, loc2: GeolocationPosition): number => {
-  const latDiff = loc1.lat - loc2.coords.latitude;
-  const lonDiff = loc1.lon - loc2.coords.longitude;
-  return latDiff * latDiff + lonDiff * lonDiff;
-};
 const reloadLocations = () => {
   currentListOfLocations.value = [];
 
@@ -120,19 +118,12 @@ const reloadLocations = () => {
   if (store.getResponseLocations) {
     currentListOfLocations.value.push(...store.getResponseLocations);
 
-    // sort by distance if geolocation is available
-    if (currentGeoLocation.value) {
-      console.log(
-        'Sorting locations by distance to current geolocation:',
-        currentGeoLocation.value,
-      );
-      currentListOfLocations.value.sort(
-        (a, b) =>
-          getDistanceDeltaSquared(a, currentGeoLocation.value as GeolocationPosition) -
-          getDistanceDeltaSquared(b, currentGeoLocation.value as GeolocationPosition),
-      );
+    // add current location at the top
+    if (currentGeoLocation.value && currentGeoLocationL.value) {
+      currentListOfLocations.value.unshift(currentGeoLocationL.value);
+      console.log('Adding current geolocation to the top of the list:', currentGeoLocationL.value);
     } else {
-      console.log('No geolocation available, not sorting locations by distance.');
+      console.log('No current geolocation to add to the list.');
     }
   }
   // add recent location at the beginning if exists and remove duplicate later in the list if exists
@@ -153,13 +144,13 @@ const reloadLocations = () => {
 const getCurrentPositionAndTriggerReload = async () => {
   try {
     const coordinates = await Geolocation.getCurrentPosition();
-    const lat = coordinates.coords.latitude;
-    const lon = coordinates.coords.longitude;
+    console.log('Current position:', coordinates);
+    currentGeoLocation.value = coordinates;
 
-    store.input = `${lat},${lon}`;
+    store.input = `${coordinates.coords.latitude},${coordinates.coords.longitude}`;
     await store.fetchLocations();
-
     reloadLocations();
+    currentGeoLocationL.value = store.getResponseLocations ? store.getResponseLocations[0] : null;
   } catch (e) {
     console.error('Error getting current position:', e);
   }
