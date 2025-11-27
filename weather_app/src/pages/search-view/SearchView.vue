@@ -59,6 +59,7 @@ import type CurrentWeather from 'src/data/currentWeather';
 import type { Position } from '@capacitor/geolocation';
 import { Geolocation } from '@capacitor/geolocation';
 import { Keyboard } from '@capacitor/keyboard';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 const $router = useRouter();
 const $q = useQuasar();
@@ -106,13 +107,14 @@ const currentListOfLocations = ref<Location[] | null>(null);
 const currentGeoLocation = ref<Position>();
 const currentGeoLocationL = ref<Location | null>();
 
+
 // keyboard handling: Capacitor Keyboard preferred, visualViewport fallback
 const keyboardHeight = ref(0);
-let kbShowHandle: any = null;
-let kbHideHandle: any = null;
+let kbShowHandle: PluginListenerHandle | null = null;
+let kbHideHandle: PluginListenerHandle | null = null;
 
 function setHeightFromVisualViewport() {
-  const vv = (window as any).visualViewport;
+  const vv: VisualViewport | null = window.visualViewport ?? null;
   if (!vv) return;
   const heightDiff = window.innerHeight - vv.height;
   keyboardHeight.value = Math.max(0, Math.round(heightDiff));
@@ -120,7 +122,7 @@ function setHeightFromVisualViewport() {
   else document.body.classList.remove('keyboard-open');
 }
 
-const onCapacitorShow = (ev: any) => {
+const onCapacitorShow = (ev: { keyboardHeight?: number }) => {
   keyboardHeight.value = ev?.keyboardHeight ?? keyboardHeight.value;
   document.body.classList.add('keyboard-open');
 };
@@ -136,29 +138,32 @@ onMounted(() => {
     // addListener returns a promise with a handle
     Keyboard.addListener('keyboardDidShow', onCapacitorShow).then((h) => (kbShowHandle = h));
     Keyboard.addListener('keyboardDidHide', onCapacitorHide).then((h) => (kbHideHandle = h));
-  } catch (e) {
-    // ignore if not available
+  } catch {
+    // ignore
   }
 
   // visualViewport fallback
-  if ((window as any).visualViewport) {
-    (window as any).visualViewport.addEventListener('resize', setHeightFromVisualViewport);
-    (window as any).visualViewport.addEventListener('geometrychange', setHeightFromVisualViewport);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', setHeightFromVisualViewport);
+    // geometrychange is non-standard but some WebViews emit it
+    window.visualViewport.addEventListener('geometrychange', setHeightFromVisualViewport);
     setHeightFromVisualViewport();
   } else {
     window.addEventListener('resize', setHeightFromVisualViewport);
   }
 });
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
   try {
-    kbShowHandle?.remove?.();
-    kbHideHandle?.remove?.();
-  } catch {}
+    await kbShowHandle?.remove?.();
+    await kbHideHandle?.remove?.();
+  } catch {
+    // ignore
+  }
 
-  if ((window as any).visualViewport) {
-    (window as any).visualViewport.removeEventListener('resize', setHeightFromVisualViewport);
-    (window as any).visualViewport.removeEventListener('geometrychange', setHeightFromVisualViewport);
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', setHeightFromVisualViewport);
+    window.visualViewport.removeEventListener('geometrychange', setHeightFromVisualViewport);
   } else {
     window.removeEventListener('resize', setHeightFromVisualViewport);
   }
