@@ -1,15 +1,13 @@
 <template>
   <main class="main-view">
     <div class="top-bar">
-      <font-awesome-icon :icon="faBars" size="2x" />
-      <p>Weather App</p>
-      <font-awesome-icon :icon="faUser" size="2x" />
+      <p>Aplikacja Pogodowa</p>
     </div>
 
     <section>
       <!-- Weather information -->
       <div v-if="weatherDataList.length === 0">
-        <p class="no-saved-locations">No saved locations</p>
+        <p class="no-saved-locations">Brak zapisanych lokalizacji</p>
       </div>
 
       <div v-else>
@@ -24,7 +22,7 @@
     <!-- Search bar -->
     <!-- Its really a button which changes page to search view -->
     <router-link class="search-button" to="/search">
-      Search location
+      Wyszukaj miejscowość
       <font-awesome-icon :icon="faMagnifyingGlass" />
     </router-link>
   </main>
@@ -32,10 +30,8 @@
 
 <script lang="ts" setup>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { Notify } from 'quasar'
+import { Notify, LocalStorage } from 'quasar'
 import { useQuasar } from 'quasar';
 
 import HorizontalWeatherCard from 'src/components/HorizontalWeatherCard/HorizontalWeatherCard.vue';
@@ -43,13 +39,15 @@ import type HorizontalWeatherCardModel from 'src/components/HorizontalWeatherCar
 import { useWeatherStore } from 'src/stores/weatherStore';
 
 import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import UriString from 'src/data/uriStrings/UriString';
+
 const $router = useRouter();
 const $q = useQuasar();
 
 const weatherStore = useWeatherStore();
 
 const gotoSelectedLocation = async (locationName: string) => {
-
   weatherStore.setLocation(locationName);
   try {
     await weatherStore.fetchWeatherData();
@@ -72,30 +70,48 @@ const gotoSelectedLocation = async (locationName: string) => {
   await $router.push('/currentWeather');
 }
 
-// example weather data list
-const weatherDataList: Array<HorizontalWeatherCardModel> = [
-  {
-    LocationName: 'New York',
-    TemperatureMax: 25,
-    TemperatureMin: 15,
-    Condition: 'Sunny',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/176.png'
-  },
-  {
-    LocationName: 'Los Angeles',
-    TemperatureMax: 28,
-    TemperatureMin: 18,
-    Condition: 'Partly Cloudy',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/116.png'
-  },
-  {
-    LocationName: 'Chicago',
-    TemperatureMax: 22,
-    TemperatureMin: 12,
-    Condition: 'Rainy',
-    ConditionIconUrl: '//cdn.weatherapi.com/weather/128x128/day/308.png'
-  },
-]
+const weatherDataList = ref<Array<HorizontalWeatherCardModel>>([]);
+
+const apiUrl = import.meta.env.VITE_WEATHER_API_URL as string;
+const apiKey = import.meta.env.VITE_WEATHER_API_KEY as string;
+
+async function fetchForecastForLocation(locationName: string) {
+  const apiUri = new UriString(apiUrl + '/forecast.json');
+  apiUri.AddParameter('key', apiKey);
+  apiUri.AddParameter('q', locationName);
+  apiUri.AddParameter('days', '1');
+  apiUri.AddParameter('aqi', 'no');
+  apiUri.AddParameter('lang', 'pl');
+
+  try {
+    const response = await fetch(apiUri.GetUri());
+    const data = await response.json();
+
+    const day = data?.forecast?.forecastday?.[0]?.day;
+    const loc = data?.location;
+
+    const model: HorizontalWeatherCardModel = {
+      LocationName: loc?.name ?? locationName,
+      TemperatureMax: day?.maxtemp_c ?? Math.round(data?.current?.temp_c ?? 0),
+      TemperatureMin: day?.mintemp_c ?? Math.round(data?.current?.temp_c ?? 0),
+      Condition: day?.condition?.text ?? data?.current?.condition?.text ?? undefined,
+      ConditionIconUrl: day?.condition?.icon ?? data?.current?.condition?.icon ?? undefined,
+    };
+
+    weatherDataList.value.push(model);
+  } catch (err) {
+    console.error('Failed to fetch forecast for', locationName, err);
+    Notify.create({ type: 'negative', message: `Failed to fetch forecast for ${locationName}` });
+  }
+}
+
+onMounted(() => {
+  const saved = LocalStorage.getItem('savedLocations');
+  if (Array.isArray(saved) && saved.length > 0) {
+    // fetch for each saved location (don't block UI)
+    saved.forEach((loc) => void fetchForecastForLocation(loc));
+  }
+});
 </script>
 
 <style scoped>

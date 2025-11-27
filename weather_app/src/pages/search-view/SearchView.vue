@@ -1,9 +1,7 @@
 <template>
   <main class="main-view">
     <div class="top-bar">
-      <font-awesome-icon :icon="faBars" size="2x" />
-      <p>Weather App</p>
-      <font-awesome-icon :icon="faUser" size="2x" />
+      <p>Aplikacja Pogodowa</p>
     </div>
 
     <section>
@@ -14,7 +12,7 @@
           </q-item-section>
 
           <q-item-section>
-            <q-item-label class="text-body1">Current location</q-item-label>
+            <q-item-label class="text-body1">Obecna lokalizacja</q-item-label>
           </q-item-section>
         </q-item>
       </q-card>
@@ -33,7 +31,7 @@
           </q-item>
         </q-list>
       </div>
-      <div class="search-container">
+      <div class="search-container" :style="{ transform: keyboardHeight ? `translateY(-${keyboardHeight}px)` : '' }">
         <q-input
           v-model="search"
           placeholder="Search location"
@@ -51,11 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useLocationStore } from 'src/stores/locationSearchStore';
 import { useWeatherStore } from 'src/stores/weatherStore';
 import { useRouter } from 'vue-router';
@@ -64,6 +58,7 @@ import { Notify } from 'quasar';
 import type CurrentWeather from 'src/data/currentWeather';
 import type { Position } from '@capacitor/geolocation';
 import { Geolocation } from '@capacitor/geolocation';
+import { Keyboard } from '@capacitor/keyboard';
 
 const $router = useRouter();
 const $q = useQuasar();
@@ -110,6 +105,64 @@ const currentListOfLocations = ref<Location[] | null>(null);
 // Export currentGeoLocation so it can be modified from outside this file
 const currentGeoLocation = ref<Position>();
 const currentGeoLocationL = ref<Location | null>();
+
+// keyboard handling: Capacitor Keyboard preferred, visualViewport fallback
+const keyboardHeight = ref(0);
+let kbShowHandle: any = null;
+let kbHideHandle: any = null;
+
+function setHeightFromVisualViewport() {
+  const vv = (window as any).visualViewport;
+  if (!vv) return;
+  const heightDiff = window.innerHeight - vv.height;
+  keyboardHeight.value = Math.max(0, Math.round(heightDiff));
+  if (keyboardHeight.value > 0) document.body.classList.add('keyboard-open');
+  else document.body.classList.remove('keyboard-open');
+}
+
+const onCapacitorShow = (ev: any) => {
+  keyboardHeight.value = ev?.keyboardHeight ?? keyboardHeight.value;
+  document.body.classList.add('keyboard-open');
+};
+
+const onCapacitorHide = () => {
+  keyboardHeight.value = 0;
+  document.body.classList.remove('keyboard-open');
+};
+
+onMounted(() => {
+  // Capacitor listeners
+  try {
+    // addListener returns a promise with a handle
+    Keyboard.addListener('keyboardDidShow', onCapacitorShow).then((h) => (kbShowHandle = h));
+    Keyboard.addListener('keyboardDidHide', onCapacitorHide).then((h) => (kbHideHandle = h));
+  } catch (e) {
+    // ignore if not available
+  }
+
+  // visualViewport fallback
+  if ((window as any).visualViewport) {
+    (window as any).visualViewport.addEventListener('resize', setHeightFromVisualViewport);
+    (window as any).visualViewport.addEventListener('geometrychange', setHeightFromVisualViewport);
+    setHeightFromVisualViewport();
+  } else {
+    window.addEventListener('resize', setHeightFromVisualViewport);
+  }
+});
+
+onBeforeUnmount(() => {
+  try {
+    kbShowHandle?.remove?.();
+    kbHideHandle?.remove?.();
+  } catch {}
+
+  if ((window as any).visualViewport) {
+    (window as any).visualViewport.removeEventListener('resize', setHeightFromVisualViewport);
+    (window as any).visualViewport.removeEventListener('geometrychange', setHeightFromVisualViewport);
+  } else {
+    window.removeEventListener('resize', setHeightFromVisualViewport);
+  }
+});
 
 const reloadLocations = () => {
   currentListOfLocations.value = [];

@@ -21,8 +21,8 @@ export const useLocationStore = defineStore('locationStore', {
     async fetchLocations() {
       this.isLoading = true;
 
-      const apiUrl = import.meta.env.VITE_WEATHER_API_URL as string;
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY as string;
+      const apiUrl = process.env.VITE_WEATHER_API_URL as string; //import.meta.env.VITE_WEATHER_API_URL as string;
+      const apiKey = process.env.VITE_WEATHER_API_KEY as string; //import.meta.env.VITE_WEATHER_API_KEY as string;
 
       const apiUri = new UriString(apiUrl + '/search.json');
 

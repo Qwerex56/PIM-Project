@@ -105,7 +105,7 @@ function weekdayFromDate(dateStr: string) {
 
 const futureWeatherData = computed<Array<HorizontalWeatherCardModel>>(() => {
   const days: ForecastDay[] = weatherStore.getForecast?.forecast?.forecastday ?? [];
-  return days.slice(0, 3).map((d) => ({
+  return days.map((d) => ({
     LocationName: weekdayFromDate(d.date),
     TemperatureMax: d.day?.maxtemp_c ?? 0,
     TemperatureMin: d.day?.mintemp_c ?? 0,
@@ -115,9 +115,9 @@ const futureWeatherData = computed<Array<HorizontalWeatherCardModel>>(() => {
 });
 
 const headlineModel = computed(() => ({
-  currentTemperature: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.avgtemp_c ?? 0,
-  feelsLikeTemperature: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.avgtemp_c ?? 0,
-  conditionIconUrl: weatherStore.getForecast?.forecast?.forecastday?.[0]?.day?.condition?.icon ?? '',
+  currentTemperature: weatherStore.getCurrentWeather?.current.temp_c ?? 0,
+  feelsLikeTemperature: weatherStore.getCurrentWeather?.current.feelslike_c ?? 0,
+  conditionIconUrl: weatherStore.getCurrentWeather?.current.condition?.icon ?? '',
 }));
 
 const searchHint = computed(() => weatherStore.getLocation ?? 'Search for a location');

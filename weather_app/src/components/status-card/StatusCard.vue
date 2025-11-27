@@ -1,7 +1,7 @@
 <template>
   <q-card flat class="status-card flex q-pa-sm row items-center">
     <div class="icon-wrapper flex-center q-mr-sm">
-      <ShapedIcon class="flex items-center justify-center" />
+      <ShapedIcon class="flex items-center justify-center" :icon="props.icon"/>
     </div>
     <div class="column justify-center">
       <div class="text-weight-medium text-body2 text-dark">{{ props.title }}</div>

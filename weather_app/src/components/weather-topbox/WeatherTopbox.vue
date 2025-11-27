@@ -1,6 +1,14 @@
 <template>
   <div class="weather-topbox">
-    <SeamlessSearchBar :search-hint="searchHint" />
+    <div class="top-bar">
+      <q-icon :name="'home'" size="3rem" v-on:click="$router.push('/')"></q-icon>
+
+        <p v-on:click="$router.push('/search')">
+          {{ searchHint }}
+        </p>
+
+        <q-icon name="search" size="2rem" v-on:click="$router.push('/search')"></q-icon>
+    </div>
 
     <WeatherHeadline :model="headlineModelToUse" />
 
@@ -13,11 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import SeamlessSearchBar from '../seamless-search-bar/SeamlessSearchBar.vue';
+import { useRouter } from 'vue-router';
 import WeatherHeadline from '../weather-headline/WeatherHeadline.vue';
 import type WeatherHeadlineModel from '../weather-headline/WeatherHeadlineModel';
 
 import { computed } from 'vue';
+
+const $router = useRouter();
 
 const props = defineProps<{
   headlineModel?: WeatherHeadlineModel,
@@ -47,6 +57,21 @@ const searchHint = computed(() => props.searchHint ?? '');
   background-color: #EADDFF;
 }
 
+.top-bar {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  text-align: center;
+
+  font-size: large;
+  font-weight: bold;
+}
+
 .forecast-buttons {
   display: flex;
   flex-direction: row;
@@ -54,15 +79,22 @@ const searchHint = computed(() => props.searchHint ?? '');
   justify-content: space-between;
 }
 
+p {
+  margin: none;
+}
+
 .button {
-  padding: 1rem 4.5rem;
+  padding: 0.5rem 1rem;
 
   background-color: #FFD8E4;
+  color: #000000;
 
   text-align: center;
 
   cursor: pointer;
+
+  border-radius: 999px;
+
+  text-decoration: none;
 }
-
-
 </style>

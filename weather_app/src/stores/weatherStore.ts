@@ -37,8 +37,8 @@ export const useWeatherStore = defineStore('weatherStore', {
     async fetchWeatherData() {
       this.isLoading = true;
 
-      const apiUrl = import.meta.env.VITE_WEATHER_API_URL as string;
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY as string;
+      const apiUrl = process.env.VITE_WEATHER_API_URL as string; //import.meta.env.VITE_WEATHER_API_URL as string;
+      const apiKey = process.env.VITE_WEATHER_API_KEY as string; //import.meta.env.VITE_WEATHER_API_KEY as string;
 
       const apiUri = new UriString(apiUrl + '/current.json');
 
@@ -59,10 +59,10 @@ export const useWeatherStore = defineStore('weatherStore', {
     },
     /**
      * Fetch forecast data from the API and store it in `forecastData`.
-     * @param days number of forecast days to request (default 3)
+     * @param days number of forecast days to request (default 7)
      * @param includeAirQuality include air quality data (default false)
      */
-    async fetchForecastData(days = 3, includeAirQuality = false) {
+    async fetchForecastData(days = 7, includeAirQuality = false) {
       this.isLoading = true;
 
       const apiUrl = import.meta.env.VITE_WEATHER_API_URL as string;

@@ -2,23 +2,28 @@
   <header>
     <WeatherTopbox :headlineModel="headlineModel" :searchHint="searchHint" />
   </header>
+
   <main class="current-weather-view">
     <div class="status-top">
       <StatusCard
         title="Wilgotność"
         :value="weatherStore.getCurrentWeather?.current.humidity.toString() + ' %'"
+        :icon="'water_drop'"
       />
       <StatusCard
         title="Wiatr"
         :value="weatherStore.getCurrentWeather?.current.wind_kph.toString() + ' kph'"
+        :icon="'air'"
       />
       <StatusCard
         title="Ciśnienie"
         :value="weatherStore.getCurrentWeather?.current.pressure_mb.toString() + ' mb'"
+        :icon="'dew_point'"
       />
       <StatusCard
         title="Widoczność"
         :value="weatherStore.getCurrentWeather?.current.vis_km.toString() + ' km'"
+        :icon="'visibility'"
       />
     </div>
 
@@ -40,11 +45,17 @@
       <StatusCard
         title="Wschód słońca"
         :value="weatherStore.getForecast?.forecast.forecastday[0]?.astro.sunrise.toString() + ''"
+        :icon="'sunny'"
       />
       <StatusCard
         title="Zachód słońca"
         :value="weatherStore.getForecast?.forecast.forecastday[0]?.astro.sunset.toString() + ''"
+        :icon="'nightlight'"
       />
+    </div>
+
+    <div class="actions-row">
+      <button class="save-location-btn" @click="saveLocation">Zapisz lokalizację</button>
     </div>
   </main>
 </template>
@@ -56,6 +67,7 @@ import WeatherTopbox from 'src/components/weather-topbox/WeatherTopbox.vue';
 import { useWeatherStore } from 'src/stores/weatherStore';
 
 import { computed } from 'vue';
+import { LocalStorage, Notify } from 'quasar';
 import type { Hour } from 'src/data/forecastWeather';
 import type WeatherHeadlineModel from 'src/components/weather-headline/WeatherHeadlineModel';
 
@@ -101,6 +113,26 @@ const chanceOfRainArray = computed(() =>
   })
 );
 
+function saveLocation() {
+  const name = weatherStore.getLocation ?? weatherStore.getCurrentWeather?.location?.name ?? '';
+  if (!name) {
+    Notify.create({ type: 'negative', message: 'Brak aktywnej lokalizacji do zapisania.' });
+    return;
+  }
+
+  const saved = LocalStorage.getItem('savedLocations');
+  const list = Array.isArray(saved) ? [...saved] : [];
+
+  if (list.includes(name)) {
+    Notify.create({ type: 'info', message: `Lokalizacja "${name}" już jest zapisana.` });
+    return;
+  }
+
+  list.push(name);
+  LocalStorage.set('savedLocations', list);
+  Notify.create({ type: 'positive', message: `Zapisano lokalizację: ${name}` });
+}
+
 </script>
 
 <style scoped>
@@ -120,5 +152,24 @@ const chanceOfRainArray = computed(() =>
 
   align-items: stretch;
   justify-items: stretch;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1rem;
+}
+
+.save-location-btn {
+  background-color: #6750A4;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.save-location-btn:active {
+  transform: translateY(1px);
 }
 </style>

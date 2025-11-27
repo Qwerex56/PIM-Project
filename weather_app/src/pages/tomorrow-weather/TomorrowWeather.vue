@@ -7,18 +7,22 @@
       <StatusCard
         title="Wilgotność"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.humidity?.toString() + ' %'"
+        :icon="'water_drop'"
       />
       <StatusCard
         title="Wiatr"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.wind_kph?.toString() + ' kph'"
+        :icon="'air'"
       />
       <StatusCard
         title="Ciśnienie"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.pressure_mb?.toString() + ' mb'"
+        :icon="'dew_point'"
       />
       <StatusCard
         title="Widoczność"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.hour?.[0]?.vis_km?.toString() + ' km'"
+        :icon="'visibility'"
       />
     </div>
 
@@ -40,10 +44,12 @@
       <StatusCard
         title="Wschód słońca"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.astro.sunrise.toString() + ''"
+        :icon="'sunny'"
       />
       <StatusCard
         title="Zachód słońca"
         :value="weatherStore.getForecast?.forecast.forecastday[1]?.astro.sunset.toString() + ''"
+        :icon="'nightlight'"
       />
     </div>
   </main>

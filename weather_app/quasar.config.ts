@@ -47,7 +47,10 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        VITE_WEATHER_API_KEY: "f7bf4a6642ee43e18b8205524252009",
+        VITE_WEATHER_API_URL: "http://api.weatherapi.com/v1"
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
