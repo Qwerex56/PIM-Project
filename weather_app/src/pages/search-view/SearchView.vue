@@ -31,7 +31,7 @@
           </q-item>
         </q-list>
       </div>
-      <div class="search-container" :style="{ transform: keyboardHeight ? `translateY(-${keyboardHeight}px)` : '' }">
+      <div class="search-container">
         <q-input
           v-model="search"
           placeholder="Search location"
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useLocationStore } from 'src/stores/locationSearchStore';
 import { useWeatherStore } from 'src/stores/weatherStore';
 import { useRouter } from 'vue-router';
@@ -58,8 +58,6 @@ import { Notify } from 'quasar';
 import type CurrentWeather from 'src/data/currentWeather';
 import type { Position } from '@capacitor/geolocation';
 import { Geolocation } from '@capacitor/geolocation';
-import { Keyboard } from '@capacitor/keyboard';
-import type { PluginListenerHandle } from '@capacitor/core';
 
 const $router = useRouter();
 const $q = useQuasar();
@@ -106,68 +104,6 @@ const currentListOfLocations = ref<Location[] | null>(null);
 // Export currentGeoLocation so it can be modified from outside this file
 const currentGeoLocation = ref<Position>();
 const currentGeoLocationL = ref<Location | null>();
-
-
-// keyboard handling: Capacitor Keyboard preferred, visualViewport fallback
-const keyboardHeight = ref(0);
-let kbShowHandle: PluginListenerHandle | null = null;
-let kbHideHandle: PluginListenerHandle | null = null;
-
-function setHeightFromVisualViewport() {
-  const vv: VisualViewport | null = window.visualViewport ?? null;
-  if (!vv) return;
-  const heightDiff = window.innerHeight - vv.height;
-  keyboardHeight.value = Math.max(0, Math.round(heightDiff));
-  if (keyboardHeight.value > 0) document.body.classList.add('keyboard-open');
-  else document.body.classList.remove('keyboard-open');
-}
-
-const onCapacitorShow = (ev: { keyboardHeight?: number }) => {
-  keyboardHeight.value = ev?.keyboardHeight ?? keyboardHeight.value;
-  document.body.classList.add('keyboard-open');
-};
-
-const onCapacitorHide = () => {
-  keyboardHeight.value = 0;
-  document.body.classList.remove('keyboard-open');
-};
-
-onMounted(() => {
-  // Capacitor listeners
-  try {
-    // addListener returns a promise with a handle
-    Keyboard.addListener('keyboardDidShow', onCapacitorShow).then((h) => (kbShowHandle = h));
-    Keyboard.addListener('keyboardDidHide', onCapacitorHide).then((h) => (kbHideHandle = h));
-  } catch {
-    // ignore
-  }
-
-  // visualViewport fallback
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', setHeightFromVisualViewport);
-    // geometrychange is non-standard but some WebViews emit it
-    window.visualViewport.addEventListener('geometrychange', setHeightFromVisualViewport);
-    setHeightFromVisualViewport();
-  } else {
-    window.addEventListener('resize', setHeightFromVisualViewport);
-  }
-});
-
-onBeforeUnmount(async () => {
-  try {
-    await kbShowHandle?.remove?.();
-    await kbHideHandle?.remove?.();
-  } catch {
-    // ignore
-  }
-
-  if (window.visualViewport) {
-    window.visualViewport.removeEventListener('resize', setHeightFromVisualViewport);
-    window.visualViewport.removeEventListener('geometrychange', setHeightFromVisualViewport);
-  } else {
-    window.removeEventListener('resize', setHeightFromVisualViewport);
-  }
-});
 
 const reloadLocations = () => {
   currentListOfLocations.value = [];
